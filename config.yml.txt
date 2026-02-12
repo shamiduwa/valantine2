@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Lovers 💖</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif;}
+body {background: linear-gradient(120deg,#ff9a9e,#fad0c4,#fbc2eb); min-height:100vh; overflow-x:hidden; transition:0.5s;}
+body.dark {background: linear-gradient(120deg,#2c3e50,#4ca1af); color:white;}
+.toggle-mode {position:fixed;top:10px;right:10px;padding:10px 15px;background:#ff6b81;border:none;color:white;border-radius:25px;cursor:pointer;z-index:1000;}
+
+/* Floating mini hearts */
+.mini-heart{position:absolute;width:10px;height:10px;background:red;transform:rotate(45deg);border-radius:50%;animation:floatMini 6s linear infinite;pointer-events:none;}
+.mini-heart:before,.mini-heart:after{content:'';position:absolute;width:10px;height:10px;background:red;border-radius:50%;}
+.mini-heart:before{top:-5px;left:0;}
+.mini-heart:after{left:-5px;top:0;}
+@keyframes floatMini{0%{transform:translateY(0) rotate(45deg);}100%{transform:translateY(-600px) rotate(45deg);}}
+
+/* Hero */
+.hero{height:90vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:white;text-shadow:2px 2px 5px rgba(0,0,0,0.2);}
+.hero h1{font-size:2.5rem;margin-bottom:1rem;}
+.hero button{padding:12px 25px;font-size:1rem;border:none;border-radius:50px;background:#ff6b81;color:white;cursor:pointer;transition:0.3s;}
+.hero button:hover{background:#ff4757;transform:scale(1.05);}
+
+/* Music Toggle */
+#music-btn{padding:10px 20px;border:none;border-radius:25px;background:#ff6b81;color:white;cursor:pointer;transition:0.3s;margin:15px;}
+#music-btn:hover{background:#ff4757;transform:scale(1.05);}
+
+/* Love Wall */
+#love-wall{max-width:90%;margin:30px auto;padding:10px;}
+#love-wall h2{text-align:center;margin-bottom:20px;color:#ff4757;}
+.message-form{display:flex;flex-direction:column;align-items:center;margin-bottom:20px;}
+.message-form input{padding:10px;width:90%;margin-bottom:10px;border-radius:25px;border:none;outline:none;}
+.message-form button{padding:10px 20px;border:none;border-radius:25px;background:#ff6b81;color:white;cursor:pointer;}
+.message-form button:hover{background:#ff4757;}
+.messages{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.message-card{background:rgba(255,255,255,0.9);padding:10px 15px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.2);max-width:250px;word-wrap:break-word;animation:fadeIn 0.5s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* Spin Heart */
+#spin-section{text-align:center;margin:40px auto;}
+#spin-section button{padding:12px 25px;font-size:1rem;border:none;border-radius:50px;background:#ff6b81;color:white;cursor:pointer;transition:0.3s;}
+#spin-section button:hover{background:#ff4757;transform:scale(1.05);}
+#quote-display{margin-top:15px;font-size:1.1rem;color:#ff4757;min-height:40px;}
+
+/* Memory Game */
+#memory-game{max-width:90%;margin:40px auto;text-align:center;}
+#memory-game h2{color:#ff4757;margin-bottom:15px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:10px;justify-items:center;}
+.card{width:70px;height:70px;background:#ff6b81;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;cursor:pointer;transition:0.3s;transform-style:preserve-3d;perspective:1000px;position:relative;}
+.card.flipped{transform:rotateY(180deg);}
+.card .front, .card .back{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:15px;}
+.card .front{background:#ff6b81;}
+.card .back{background:#fff;color:#ff6b81;transform:rotateY(180deg);}
+.card.matched{visibility:hidden;}
+
+/* Gift Box */
+#gift-section{text-align:center;margin:40px auto;}
+#gift-section h2{color:#ff4757;margin-bottom:15px;}
+#gift-box{width:80px;height:80px;background:#ff6b81;margin:0 auto;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;cursor:pointer;transition:0.3s;position:relative;z-index:10;}
+#gift-box:hover{transform:scale(1.1);}
+
+/* Confetti */
+.confetti{position:fixed;width:10px;height:10px;background-color:#ff6b81;z-index:9999;opacity:0.8;animation:confettiFall 3s linear infinite;}
+@keyframes confettiFall{0%{transform:translateY(0);}100%{transform:translateY(100vh);}}
+
+/* Footer */
+footer{text-align:center;padding:15px;color:white;font-weight:bold;text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
+</style>
+</head>
+<body>
+
+<button class="toggle-mode" onclick="toggleMode()">🌙 Toggle Mode</button>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>Welcome Lovers! 💖</h1>
+    <p>Spread love & happiness today!</p>
+    <button onclick="scrollToSection('love-wall')">Share a Love Note</button>
+</div>
+
+<!-- Music -->
+<div style="text-align:center;">
+  <button id="music-btn">🎵 Play Music</button>
+</div>
+<audio id="bg-music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg" type="audio/mpeg" type="audio/mpeg">
+</audio>
+<audio id="click-sound">
+  <source src="https://www.orangefreesounds.com/wp-content/uploads/2017/01/Button-click-sound.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Love Wall -->
+<section id="love-wall">
+    <h2>Love Wall 💌</h2>
+    <div class="message-form">
+        <input type="text" id="message-input" placeholder="Type your love note...">
+        <button onclick="addMessage()">Post</button>
+    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fun Baby Name Generator 💖</title>
+<style>
+body {font-family: Arial, sans-serif; background: linear-gradient(120deg,#ff9a9e,#fad0c4,#fbc2eb); text-align:center; padding:50px;}
+input {padding:10px; margin:10px; border-radius:25px; border:none; width:200px; text-align:center;}
+button {padding:10px 20px; border:none; border-radius:25px; background:#ff6b81; color:white; cursor:pointer; transition:0.3s; margin:5px;}
+button:hover {background:#ff4757; transform:scale(1.05);}
+#babyNames {margin-top:20px; font-size:1.5rem; font-weight:bold;}
+.nameItem {margin:5px; cursor:pointer; display:block;}
+.nameItem:hover {color:#ff4757; text-decoration:underline;}
+.heart{color:red;}
+</style>
+</head>
+<body>
+
+<h1>Fun Baby Name Generator 💖</h1>
+<br>
+<p>Enter both parents' names:</p>
+
+<input type="text" id="girlName" placeholder="Girl Name">
+<input type="text" id="boyName" placeholder="Boy Name">
+<br>
+<button onclick="generateGirlNames()">Generate Girl Baby Names</button>
+<button onclick="generateBoyNames()">Generate Boy Baby Names</button>
+
+<div id="babyNames"></div>
+
+<script>
+// Function to generate single clean baby name
+function generateName(first, second, type='girl') {
+    let halfFirst = first.slice(0, Math.ceil(first.length * (type==='girl'?0.6:0.4)));
+    let halfSecond = second.slice(Math.floor(second.length * (type==='girl'?0.4:0.6)));
+    return halfFirst + halfSecond + " 💖"; // Only heart at end
+}
+
+// Generate multiple girl names
+function generateGirlNames() {
+    const girl = document.getElementById('girlName').value.trim();
+    const boy = document.getElementById('boyName').value.trim();
+    if(!girl || !boy) { alert("කරුණාකර දෙදෙනාගේ නමත් type කරන්න!"); return; }
+
+    let namesHTML = '';
+    for(let i=0;i<5;i++){
+        const name = generateName(girl,boy,'girl');
+        namesHTML += `<span class="nameItem heart" onclick="copyName('${name}')">${name}</span>`;
+    }
+    document.getElementById('babyNames').innerHTML = `<strong>Girl Baby Name Suggestions:</strong><br>` + namesHTML;
+}
+
+// Generate multiple boy names
+function generateBoyNames() {
+    const girl = document.getElementById('girlName').value.trim();
+    const boy = document.getElementById('boyName').value.trim();
+    if(!girl || !boy) { alert("කරුණාකර දෙදෙනාගේ නමත් type කරන්න!"); return; }
+
+    let namesHTML = '';
+    for(let i=0;i<5;i++){
+        const name = generateName(girl,boy,'boy');
+        namesHTML += `<span class="nameItem heart" onclick="copyName('${name}')">${name}</span>`;
+    }
+    document.getElementById('babyNames').innerHTML = `<strong>Boy Baby Name Suggestions:</strong><br>` + namesHTML;
+}
+
+// Copy to clipboard
+function copyName(name){
+    navigator.clipboard.writeText(name);
+    alert(`Copied to clipboard: ${name}`);
+}
+</script>
+
+</body>
+</html>
+	
+    <div class="messages" id="messages"></div>
+</section>
+
+<!-- Spin Heart -->
+<section id="spin-section">
+    <h2>Spin the Heart 🎡</h2>
+    <button onclick="spinHeart()">Spin ❤️</button>
+    <div id="quote-display"></div>
+</section>
+
+<!-- Memory Game -->
+<section id="memory-game">
+    <h2>Match the Hearts 💝</h2>
+    <div class="grid" id="grid"></div>
+</section>
+
+<!-- Gift Box Section -->
+<div id="giftContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:80vh; position:relative;">
+  
+  <!-- Top Text -->
+  <div id="giftText" style="font-size:1.8rem; font-weight:bold; color:#ff4757; margin-bottom:20px; animation: fadeBounce 2s infinite;">
+    Click and Earn Your Gift 🎁
+  </div>
+  
+  <!-- Gift Box -->
+  <div id="giftBox" style="cursor:pointer; width:150px; height:150px; background:#ff6b81; border-radius:20px; position:relative; box-shadow:0 10px 20px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; font-size:2rem; transition:transform 0.3s;">
+    🎁
+    <!-- Ribbon -->
+    <div style="position:absolute; top:50px; left:25px; width:100px; height:20px; background:#ff4757; border-radius:10px;"></div>
+    <div style="position:absolute; top:25px; left:65px; width:20px; height:100px; background:#ff4757; border-radius:10px;"></div>
+  </div>
+  
+  <!-- Hidden message -->
+  <div id="giftMessage" style="margin-top:20px; text-align:center; opacity:0; transform:translateY(-20px); transition:all 0.8s;">
+    <div style="font-size:1.5rem; color:#ff4757; font-weight:bold;">Best Couple 2026</div>
+    <div style="font-size:1.8rem; color:#ff6b81; font-weight:bold;">Happy Valentine</div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+</div>
+
+<style>
+@keyframes fadeBounce {
+  0%,100% {opacity:1; transform: translateY(0);}
+  50% {opacity:0.8; transform: translateY(-10px);}
+}
+</style>
+
+<script>
+// Gift Box Click Logic
+const giftBox = document.getElementById('giftBox');
+const giftMessage = document.getElementById('giftMessage');
+const confettiCanvas = document.getElementById('confettiCanvas');
+let clickCount = 0;
+
+giftBox.addEventListener('click', () => {
+  clickCount++;
+
+  if(clickCount === 1){
+    // First click → first link
+    window.open('https://your-first-link.com', '_blank'); // replace with your first link
+  } else if(clickCount >= 2){
+    // Second click → box open + message + confetti
+    giftBox.style.transform = "scale(1.2) rotate(-5deg)";
+    setTimeout(() => { giftBox.style.transform = "scale(1) rotate(0deg)"; }, 200);
+    
+    giftMessage.style.opacity = 1;
+    giftMessage.style.transform = "translateY(0)";
+    
+    launchConfetti();
+  }
+});
+
+// Confetti effect
+function launchConfetti() {
+  const ctx = confettiCanvas.getContext('2d');
+  const w = confettiCanvas.width = window.innerWidth;
+  const h = confettiCanvas.height = window.innerHeight;
+  const confettiCount = 100;
+  const confetti = [];
+
+  for(let i=0;i<confettiCount;i++){
+    confetti.push({
+      x: Math.random()*w,
+      y: Math.random()*h - h,
+      r: Math.random()*6+4,
+      d: Math.random()*confettiCount,
+      color: `hsl(${Math.random()*360}, 100%, 50%)`,
+      tilt: Math.random()*10-10
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    confetti.forEach(c => {
+      ctx.beginPath();
+      ctx.lineWidth = c.r/2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x + c.tilt + c.r/4, c.y);
+      ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r/4);
+      ctx.stroke();
+    });
+    update();
+  }
+
+  function update() {
+    confetti.forEach(c => {
+      c.y += Math.cos(0.01 + c.d) + 3 + c.r/2;
+      c.tilt += Math.sin(0.05);
+      if(c.y > h) {
+        c.y = -10;
+        c.x = Math.random()*w;
+      }
+    });
+  }
+
+  let interval = setInterval(draw,20);
+  setTimeout(()=> clearInterval(interval),4000); // lasts 4s
+}
+</script>
+
+
+</script>
+
+
+</section>
+
+<footer>
+Made with ❤️ for all lovers | Enjoy & Share the Love!
+</footer>
+
+<script>
+// Light/Dark Mode
+function toggleMode(){document.body.classList.toggle('dark');}
+
+// Mini hearts floating continuously
+const colors=['#ff6b81','#ff4757','#ffa502','#ff7f50'];
+function spawnMiniHeart(){
+    let heart=document.createElement('div');
+    heart.className='mini-heart';
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDuration=(4+Math.random()*3)+'s';
+    heart.style.background=colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+}
+setInterval(spawnMiniHeart,300);
+
+// Love Wall
+function playClick(){document.getElementById('click-sound').play();}
+function addMessage(){
+    playClick();
+    const input=document.getElementById('message-input');
+    const value=input.value.trim();
+    if(value==='') return;
+    const msgContainer=document.getElementById('messages');
+    const msgCard=document.createElement('div');
+    msgCard.className='message-card';
+    msgCard.textContent=value;
+    msgContainer.appendChild(msgCard);
+    input.value='';
+    createConfetti();
+    msgCard.scrollIntoView({behavior:'smooth'});
+}
+
+// Spin Heart
+const quotes=["You make my heart skip a beat! 💖","Love is in the air! 🌹","You're my favorite person! 😍","Roses are red, violets are blue, I'm so happy I found you! 💘","Hugs & Kisses! 🤗💋","Every moment with you is magical! ✨"];
+function spinHeart(){playClick(); const display=document.getElementById('quote-display'); display.textContent=quotes[Math.floor(Math.random()*quotes.length)]; createConfetti();}
+
+// Scroll to Section
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+
+// Confetti
+function createConfetti(num=20){
+    for(let i=0;i<num;i++){
+        let conf=document.createElement('div');
+        conf.className='confetti';
+        conf.style.left=Math.random()*100+'vw';
+        conf.style.background=colors[Math.floor(Math.random()*colors.length)];
+        conf.style.width=(5+Math.random()*5)+'px';
+        conf.style.height=(5+Math.random()*5)+'px';
+        conf.style.animationDuration=(2+Math.random()*2)+'s';
+        document.body.appendChild(conf);
+        setTimeout(()=>{conf.remove();},3000);
+    }
+}
+
+// Music Toggle
+const musicBtn=document.getElementById('music-btn');
+const bgMusic=document.getElementById('bg-music');
+let playing=false;
+musicBtn.addEventListener('click',()=>{
+    if(!playing){bgMusic.play();musicBtn.textContent='⏸ Pause Music';playing=true;}
+    else{bgMusic.pause();musicBtn.textContent='🎵 Play Music';playing=false;}
+});
+
+// Memory Game
+const grid=document.getElementById('grid');
+const symbols=['💖','💖','🌹','🌹','💘','💘','💌','💌','😍','😍','💋','💋','✨','✨','🎁','🎁'];
+let firstCard=null, secondCard=null, lock=false;
+function shuffle(array){return array.sort(()=>0.5-Math.random());}
+let shuffled=shuffle([...symbols]);
+shuffled.forEach(sym=>{
+    const card=document.createElement('div');
+    card.className='card';
+    const front=document.createElement('div'); front.className='front'; front.textContent='?';
+    const back=document.createElement('div'); back.className='back'; back.textContent=sym;
+    card.appendChild(front); card.appendChild(back);
+    card.addEventListener('click',()=>{playClick(); flipCard(card);});
+    grid.appendChild(card);
+});
+function flipCard(card){
+    if(lock||card.classList.contains('flipped')||card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    if(!firstCard) firstCard=card;
+    else{
+        secondCard=card; lock=true;
+        if(firstCard.querySelector('.back').textContent===secondCard.querySelector('.back').textContent){
+            firstCard.classList.add('matched'); secondCard.classList.add('matched'); createConfetti();
+            resetCards();
+        } else {setTimeout(()=>{firstCard.classList.remove('flipped');secondCard.classList.remove('flipped');resetCards();},800);}
+    }
+}
+function resetCards(){[firstCard,secondCard]=[null,null]; lock=false;}
+
+// Gift Box Click with Heart Explosion
+let giftClicks=0;
+document.getElementById('gift-box').addEventListener('click',(e)=>{
+    playClick();
+    giftClicks++;
+    if(giftClicks===1){
+        window.open('https://omg10.com/4/10601148'); // replace with your link
+    } else if(giftClicks===2){
+        alert('Thank you & Happy Valentine! 💖');
+        for(let i=0;i<50;i++){
+            let heart=document.createElement('div');
+            heart.className='confetti';
+            heart.style.left=(e.clientX+Math.random()*50-25)+'px';
+            heart.style.top=(e.clientY+Math.random()*50-25)+'px';
+            heart.style.width='12px';
+            heart.style.height='12px';
+            heart.style.background=colors[Math.floor(Math.random()*colors.length)];
+            document.body.appendChild(heart);
+            setTimeout(()=>{heart.remove();},2000);
+        }
+        giftClicks=0;
+    }
+});
+</script>
+</body>
+</html>
